@@ -68,7 +68,7 @@ public class RestNetwork {
                 .body(String.class);
     }
 
-    public static <T> T parseJson(String jsonBody, Class<T> type){
+    public static <T> T parseFromJson(String jsonBody, Class<T> type){
         try {
             return objectMapper.readValue(jsonBody, type);
         } catch (JsonProcessingException e) {
