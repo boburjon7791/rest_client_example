@@ -34,7 +34,7 @@ public class PostController {
         return Header.ok(postService.update(request.getData(), id));
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     public Header<?> delete(@PathVariable Long id){
         postService.delete(id);
         return Header.ok();

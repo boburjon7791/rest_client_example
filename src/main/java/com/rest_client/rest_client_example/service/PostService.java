@@ -12,18 +12,23 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PostService {
     private final PostClient postClient;
+
     public PostRes create(PostReq post){
         return postClient.createPost(post);
     }
+
     public PostRes getById(Long id){
         return postClient.getById(id);
     }
+
     public List<PostRes> getAll(){
         return postClient.getAll();
     }
+
     public PostRes update(PostReq post, Long id){
         return postClient.updatePost(post, id);
     }
+
     public void delete(Long id){
         postClient.deleteById(id);
     }

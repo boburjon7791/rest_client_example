@@ -7,7 +7,6 @@ import com.rest_client.rest_client_example.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.RestClient;
 
 import java.util.List;
@@ -56,6 +55,7 @@ public class PostClient {
                 .onStatus(Utils.okErrorChecker, Utils.globalErrorHandler)
                 .body(List.class);
     }
+
     public void deleteById(Long id){
         restClient.delete()
                 .uri(RestConstants.postsBaseUrl+"/"+id)
