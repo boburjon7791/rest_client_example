@@ -1,5 +1,7 @@
 package com.rest_client.rest_client_example.client;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rest_client.rest_client_example.utils.Utils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -10,6 +12,7 @@ import java.util.Map;
 
 public class RestNetwork {
     private static final RestClient restClient=RestClient.builder().build();
+    private static final ObjectMapper objectMapper=new ObjectMapper();
 
     public static <T> String get(String apiUrl, Map<String, ?> params){
         return restClient.get()
@@ -63,5 +66,13 @@ public class RestNetwork {
                 .onStatus(Utils.okErrorChecker, Utils.globalErrorHandler)
                 .onStatus(Utils.okSuccessChecker, Utils.globalSuccessHandler)
                 .body(String.class);
+    }
+
+    public static <T> T parseJson(String jsonBody, Class<T> type){
+        try {
+            return objectMapper.readValue(jsonBody, type);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
