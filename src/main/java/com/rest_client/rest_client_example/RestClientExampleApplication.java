@@ -8,21 +8,16 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 @SpringBootApplication
 public class RestClientExampleApplication {
@@ -46,7 +41,7 @@ public class RestClientExampleApplication {
 		 * get Post array with request params
 		 * */
 		System.out.println("2. get all by userId");
-		postJsonArray = RestNetwork.get(RestNetwork.POSTS_API, Map.of("userId",1), RestNetwork.emptyHeaders());
+		postJsonArray = RestNetwork.get(RestNetwork.POSTS_API, Map.of("userId",String.valueOf(1)), RestNetwork.emptyHeaders());
 		posts = RestNetwork.parseFromJsonArray(postJsonArray, Post.class);
 		posts.forEach(System.out::println);
 		System.out.println();
@@ -173,7 +168,7 @@ public class RestClientExampleApplication {
 
 
 			System.out.println("13. post with url encoded request");
-			Map<String, Object> params = Map.of(
+			Map<String, String> params = Map.of(
 					"id", "25",
 					"userId", "15",
 					"title", "title for request",
@@ -182,7 +177,7 @@ public class RestClientExampleApplication {
 
 			httpheaders.set("auth", "testing url encoded post request");
 
-			MultiValueMap<String, Object> multiValueMap = RestNetwork.convertToMultiValueMap(params);
+			MultiValueMap<String, String> multiValueMap = RestNetwork.convertToMultiValueMap(params);
 			String postedJson = RestNetwork.post(RestNetwork.FORM_DATA_TEST, multiValueMap, httpheaders);
 			Post posted = RestNetwork.parseFromJson(postedJson, Post.class);
 			System.out.println("posted = " + posted);

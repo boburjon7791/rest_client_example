@@ -26,9 +26,9 @@ public class RestNetwork {
     private static final RestClient restClient=RestClient.builder().build();
     private static final ObjectMapper objectMapper=new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-    public static String get(String apiUrl, Map<String, ?> params, HttpHeaders headers){
+    public static String get(String apiUrl, Map<String, String> params, HttpHeaders headers){
         return restClient.get()
-                .uri(apiUrl, params)
+                .uri(apiUrl, uriBuilder -> uriBuilder.replaceQueryParams(convertToMultiValueMap(params)).build())
                 .headers(httpHeaders -> httpHeaders.addAll(headers))
                 .retrieve()
                 .onStatus(RestNetwork::isFail,    RestNetwork::errorResponseAction)
@@ -36,9 +36,9 @@ public class RestNetwork {
                 .body(String.class);
     }
 
-    public static InputStream getMultipart(String apiUrl, Map<String, ?> params, HttpHeaders headers){
+    public static InputStream getMultipart(String apiUrl, Map<String, String> params, HttpHeaders headers){
         byte[] body = restClient.get()
-                .uri(apiUrl, params)
+                .uri(apiUrl, uriBuilder -> uriBuilder.replaceQueryParams(convertToMultiValueMap(params)).build())
                 .headers(httpHeaders -> httpHeaders.addAll(headers))
                 .retrieve()
                 .onStatus(RestNetwork::isFail, RestNetwork::errorResponseAction)
@@ -50,9 +50,9 @@ public class RestNetwork {
     /*
     * POST requests
     * */
-    public static <T> String post(String apiUrl, T body, Map<String, ?> params, HttpHeaders headers, MediaType mediaType){
+    public static <T> String post(String apiUrl, T body, Map<String, String> params, HttpHeaders headers, MediaType mediaType){
         return restClient.post()
-                .uri(apiUrl, params)
+                .uri(apiUrl, uriBuilder -> uriBuilder.replaceQueryParams(convertToMultiValueMap(params)).build())
                 .body(body)
                 .contentType(mediaType)
                 .headers(httpHeaders -> httpHeaders.addAll(headers))
@@ -62,7 +62,7 @@ public class RestNetwork {
                 .body(String.class);
     }
 
-    public static String post(String apiUrl, MultiValueMap<String, ?> formData, HttpHeaders headers){
+    public static String post(String apiUrl, MultiValueMap<String, String> formData, HttpHeaders headers){
         return restClient.post()
                 .uri(apiUrl)
                 .body(formData)
@@ -77,9 +77,9 @@ public class RestNetwork {
     /*
     * PUT request
     * */
-    public static <T> String put(String apiUrl, T body, Map<String, ?> params, HttpHeaders headers, MediaType mediaType){
+    public static <T> String put(String apiUrl, T body, Map<String, String> params, HttpHeaders headers, MediaType mediaType){
         return restClient.put()
-                .uri(apiUrl, params)
+                .uri(apiUrl, uriBuilder -> uriBuilder.replaceQueryParams(convertToMultiValueMap(params)).build())
                 .body(body)
                 .contentType(mediaType)
                 .headers(httpHeaders -> httpHeaders.addAll(headers))
@@ -89,7 +89,7 @@ public class RestNetwork {
                 .body(String.class);
     }
 
-    public static String put(String apiUrl, MultiValueMap<String, ?> formData, HttpHeaders headers){
+    public static String put(String apiUrl, MultiValueMap<String, String> formData, HttpHeaders headers){
         return restClient.post()
                 .uri(apiUrl)
                 .body(formData)
@@ -104,9 +104,9 @@ public class RestNetwork {
     /*
     * DELETE request
     * */
-    public static void delete(String apiUrl, Map<String, ?> params, HttpHeaders headers){
+    public static void delete(String apiUrl, Map<String, String> params, HttpHeaders headers){
          restClient.delete()
-                .uri(apiUrl, params)
+                .uri(apiUrl, uriBuilder -> uriBuilder.replaceQueryParams(convertToMultiValueMap(params)).build())
                 .headers(httpHeaders -> httpHeaders.addAll(headers))
                 .retrieve()
                 .onStatus(RestNetwork::isFail,    RestNetwork::errorResponseAction)
@@ -130,7 +130,7 @@ public class RestNetwork {
         }
     }
 
-    public static Map<String, ?> emptyParam(){
+    public static Map<String, String> emptyParam(){
         return new HashMap<>();
     }
 
@@ -138,8 +138,8 @@ public class RestNetwork {
         return new HttpHeaders();
     }
 
-    public static MultiValueMap<String, Object> convertToMultiValueMap(Map<String, Object> params){
-        Map<String, List<Object>> listMap = params.entrySet().stream()
+    public static MultiValueMap<String, String> convertToMultiValueMap(Map<String, String> params){
+        Map<String, List<String>> listMap = params.entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, object -> List.of(object.getValue())));
         return new LinkedMultiValueMap<>(listMap);
     }
