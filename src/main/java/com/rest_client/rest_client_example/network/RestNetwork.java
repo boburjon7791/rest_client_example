@@ -41,7 +41,7 @@ public class RestNetwork {
                 .uri(apiUrl, uriBuilder -> uriBuilder.replaceQueryParams(convertToMultiValueMap(params)).build())
                 .headers(httpHeaders -> httpHeaders.addAll(headers))
                 .retrieve()
-                .onStatus(RestNetwork::isFail, RestNetwork::errorResponseAction)
+                .onStatus(RestNetwork::isFail,    RestNetwork::errorResponseAction)
                 .onStatus(RestNetwork::isSuccess, RestNetwork::successResponseAction)
                 .body(byte[].class);
         return new ByteArrayInputStream(Objects.requireNonNull(body));
