@@ -2,28 +2,24 @@ package com.rest_client.rest_client_example.network;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rest_client.rest_client_example.config.RestClientInterceptor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpRequest;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
-import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
 public class RestNetwork {
-    private static final RestClient restClient=RestClient.builder().build();
+    private static final RestClient restClient=RestClient.builder().requestInterceptor(new RestClientInterceptor()).build();
     private static final ObjectMapper objectMapper=new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     public static String get(String apiUrl, Map<String, String> params, HttpHeaders headers){
@@ -31,20 +27,7 @@ public class RestNetwork {
                 .uri(apiUrl, uriBuilder -> uriBuilder.replaceQueryParams(convertToMultiValueMap(params)).build())
                 .headers(httpHeaders -> httpHeaders.addAll(headers))
                 .retrieve()
-                .onStatus(RestNetwork::isFail,    RestNetwork::errorResponseAction)
-                .onStatus(RestNetwork::isSuccess, RestNetwork::successResponseAction)
                 .body(String.class);
-    }
-
-    public static InputStream getMultipart(String apiUrl, Map<String, String> params, HttpHeaders headers){
-        byte[] body = restClient.get()
-                .uri(apiUrl, uriBuilder -> uriBuilder.replaceQueryParams(convertToMultiValueMap(params)).build())
-                .headers(httpHeaders -> httpHeaders.addAll(headers))
-                .retrieve()
-                .onStatus(RestNetwork::isFail,    RestNetwork::errorResponseAction)
-                .onStatus(RestNetwork::isSuccess, RestNetwork::successResponseAction)
-                .body(byte[].class);
-        return new ByteArrayInputStream(Objects.requireNonNull(body));
     }
 
     /*
@@ -57,20 +40,6 @@ public class RestNetwork {
                 .contentType(mediaType)
                 .headers(httpHeaders -> httpHeaders.addAll(headers))
                 .retrieve()
-                .onStatus(RestNetwork::isFail,    RestNetwork::errorResponseAction)
-                .onStatus(RestNetwork::isSuccess, RestNetwork::successResponseAction)
-                .body(String.class);
-    }
-
-    public static String post(String apiUrl, MultiValueMap<String, String> formData, HttpHeaders headers){
-        return restClient.post()
-                .uri(apiUrl)
-                .body(formData)
-                .headers(httpHeaders->httpHeaders.addAll(headers))
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .retrieve()
-                .onStatus(RestNetwork::isFail,    RestNetwork::errorResponseAction)
-                .onStatus(RestNetwork::isSuccess, RestNetwork::successResponseAction)
                 .body(String.class);
     }
 
@@ -84,20 +53,6 @@ public class RestNetwork {
                 .contentType(mediaType)
                 .headers(httpHeaders -> httpHeaders.addAll(headers))
                 .retrieve()
-                .onStatus(RestNetwork::isFail,    RestNetwork::errorResponseAction)
-                .onStatus(RestNetwork::isSuccess, RestNetwork::successResponseAction)
-                .body(String.class);
-    }
-
-    public static String put(String apiUrl, MultiValueMap<String, String> formData, HttpHeaders headers){
-        return restClient.post()
-                .uri(apiUrl)
-                .body(formData)
-                .headers(httpHeaders->httpHeaders.addAll(headers))
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .retrieve()
-                .onStatus(RestNetwork::isFail,    RestNetwork::errorResponseAction)
-                .onStatus(RestNetwork::isSuccess, RestNetwork::successResponseAction)
                 .body(String.class);
     }
 
@@ -109,11 +64,12 @@ public class RestNetwork {
                 .uri(apiUrl, uriBuilder -> uriBuilder.replaceQueryParams(convertToMultiValueMap(params)).build())
                 .headers(httpHeaders -> httpHeaders.addAll(headers))
                 .retrieve()
-                .onStatus(RestNetwork::isFail,    RestNetwork::errorResponseAction)
-                .onStatus(RestNetwork::isSuccess, RestNetwork::successResponseAction)
                 .toBodilessEntity();
     }
 
+    /*
+    * helper methods
+    * */
     public static <T> List<T> parseFromJsonArray(String jsonBody, Class<T> type){
         try {
             return objectMapper.readValue(jsonBody, objectMapper.getTypeFactory().constructCollectionType(List.class, type));
@@ -151,48 +107,30 @@ public class RestNetwork {
     public static final String IMAGE_URL="https://media.wired.com/photos/64daad6b4a854832b16fd3bc/master/w_1920,c_limit/How-to-Choose-a-Laptop-August-2023-Gear.jpg";
     public static final String IMAGE_URL2="https://i.pinimg.com/originals/72/22/78/722278c489e2563abc3e0aa91901bb16.jpg";
     public static final String IMAGE_UPLOAD="https://v2.convertapi.com/upload";
-    public static final String HEADER_TEST_URL="http://localhost:8080/test-headers";
-    public static final String FILE_URL_WITH_HEADERS="http://localhost:8080/test-multipart-headers";
-    public static final String FORM_DATA_TEST="http://localhost:8080/test-multi-value-map";
+    public static final String CAT_IMAGE_UPLOAD="https://api.thecatapi.com/v1/images/upload";
 
     /**
-     * this is for handling external API success responses
+     * External APIs' keys
      * */
-    private static void successResponseAction(HttpRequest request, ClientHttpResponse response){
-        try {
-            log.info("Called : request method = {},  request uri = {},  response status code = {}", request.getMethod(),request.getURI(), response.getStatusCode());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+    public static final String CAT_API_KEY="live_MCgVsBDdcRjZO3MNuKjaMDlAhrdMO5s2G3DDlJ3qvvrj6EnJdnrcXADToyujNG8L";
 
-    /**
-     * this is for checking external API success response
-     * */
-    private static boolean isSuccess(HttpStatusCode httpStatusCode){
-        return httpStatusCode.is2xxSuccessful();
-    }
+//    ----------------
+    public static <T> String saveImage(String apiUrl, MultipartFile file, Class<T> type){
+        Resource resource = file.getResource();
 
-    /**
-     * this is for handling third party API fail responses
-     * */
-    private static void errorResponseAction(HttpRequest request, ClientHttpResponse response){
-        try {
-            log.error("Error was occurred : request method = {},  request uri = {},  response status code = {}", request.getMethod(),request.getURI(), response.getStatusCode());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        try {
-            throw new RuntimeException(String.valueOf(response.getStatusCode().value()));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+        MultiValueMap<String, Object> param = new LinkedMultiValueMap<>();
+        param.add("file", resource);
 
-    /**
-     * this is for checking external API fail response
-     * */
-    private static boolean isFail(HttpStatusCode httpStatusCode){
-        return !httpStatusCode.is2xxSuccessful();
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("x-api-key", RestNetwork.CAT_API_KEY);
+
+
+        return restClient.post()
+                .uri(apiUrl)
+                .body(param)
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .headers(httpHeaders -> httpHeaders.addAll(headers))
+                .retrieve()
+                .body(String.class);
     }
 }
