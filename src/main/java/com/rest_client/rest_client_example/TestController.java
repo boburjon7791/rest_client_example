@@ -17,10 +17,10 @@ public class TestController {
         String body;
 
         // for error case
-//        body=RestNetwork.post(RestNetwork.CAT_IMAGE_UPLOAD+"ddd", file);
+//        body=RestNetwork.post(RestNetwork.CAT_IMAGE_UPLOAD+"ddd", file, RestNetwork.emptyHeaders());
 
         // for success case
-        body=RestNetwork.post(RestNetwork.CAT_IMAGE_UPLOAD, file);
+        body=RestNetwork.post(RestNetwork.CAT_IMAGE_UPLOAD, file, RestNetwork.emptyHeaders());
 
         response=RestNetwork.parseFromJson(body, CatAttachment.class);
 

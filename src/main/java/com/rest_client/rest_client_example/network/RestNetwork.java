@@ -41,13 +41,12 @@ public class RestNetwork {
                 .body(String.class);
     }
 
-    public static String post(String apiUrl, MultipartFile file){
+    public static String post(String apiUrl, MultipartFile file, HttpHeaders headers){
         Resource resource = file.getResource();
 
         MultiValueMap<String, Object> param = new LinkedMultiValueMap<>();
         param.add("file", resource);
 
-        HttpHeaders headers = new HttpHeaders();
         headers.set("x-api-key", RestNetwork.CAT_API_KEY);
 
         return restClient.post()
