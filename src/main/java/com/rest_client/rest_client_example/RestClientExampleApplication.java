@@ -61,8 +61,7 @@ public class RestClientExampleApplication {
 		/*
 		 * save file with POST request
 		 * */
-		// todo
-//		RestNetwork.saveImage();
+		// I have tested in TestController
 
 		/*
 		 * update Post
