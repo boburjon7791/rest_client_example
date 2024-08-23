@@ -19,7 +19,7 @@ public class RestClientInterceptor implements ClientHttpRequestInterceptor {
         HttpStatusCode statusCode = response.getStatusCode();
         if (statusCode.is2xxSuccessful()) {
             log.info("Called : request method = {},  request uri = {},  response status code = {}", request.getMethod(), request.getURI(), response.getStatusCode());
-        }else if(!statusCode.is2xxSuccessful()) {
+        }else {
             throw new RuntimeException("Error was occurred : request method = %s,  request uri = %s,  response status code = %s".formatted(request.getMethod(), request.getURI(), response.getStatusCode()));
         }
         return response;
