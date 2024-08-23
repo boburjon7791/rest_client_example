@@ -1,8 +1,13 @@
 package com.rest_client.rest_client_example;
 
+import com.rest_client.rest_client_example.model.Post;
+import com.rest_client.rest_client_example.network.RestNetwork;
 import jakarta.annotation.PostConstruct;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import java.util.List;
+import java.util.Map;
 
 @SpringBootApplication
 public class RestClientExampleApplication {
@@ -13,12 +18,15 @@ public class RestClientExampleApplication {
 
 	@PostConstruct
 	public void init() {
+		String postJsonArray;
+		List<Post> posts;
+
 		/*
 		 * get Post array
 		 * */
 		/*System.out.println("1. get all test");
-		String postJsonArray = RestNetwork.get(RestNetwork.POSTS_API, RestNetwork.emptyParam(), RestNetwork.emptyHeaders());
-		List<Post> posts = RestNetwork.parseFromJsonArray(postJsonArray, Post.class);
+		postJsonArray = RestNetwork.get(RestNetwork.POSTS_API, RestNetwork.emptyParam(), RestNetwork.emptyHeaders());
+		posts = RestNetwork.parseFromJsonArray(postJsonArray, Post.class);
 		posts.forEach(System.out::println);
 		System.out.println();*/
 
