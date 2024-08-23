@@ -113,9 +113,11 @@ public class RestNetwork {
     }
 
     public static MultiValueMap<String, String> convertToMultiValueMap(Map<String, String> params){
-        Map<String, List<String>> listMap = params.entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, object -> List.of(object.getValue())));
-        return new LinkedMultiValueMap<>(listMap);
+        MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
+
+        params.forEach(multiValueMap::add);
+
+        return multiValueMap;
     }
 
     /**
