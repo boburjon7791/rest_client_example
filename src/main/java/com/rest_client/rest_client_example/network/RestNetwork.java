@@ -43,6 +43,24 @@ public class RestNetwork {
                 .body(String.class);
     }
 
+    public static String post(String apiUrl, MultipartFile file){
+        Resource resource = file.getResource();
+
+        MultiValueMap<String, Object> param = new LinkedMultiValueMap<>();
+        param.add("file", resource);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("x-api-key", RestNetwork.CAT_API_KEY);
+
+        return restClient.post()
+                .uri(apiUrl)
+                .body(param)
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .headers(httpHeaders -> httpHeaders.addAll(headers))
+                .retrieve()
+                .body(String.class);
+    }
+
     /*
     * PUT request
     * */
@@ -113,24 +131,4 @@ public class RestNetwork {
      * External APIs' keys
      * */
     public static final String CAT_API_KEY="live_MCgVsBDdcRjZO3MNuKjaMDlAhrdMO5s2G3DDlJ3qvvrj6EnJdnrcXADToyujNG8L";
-
-//    ----------------
-    public static <T> String saveImage(String apiUrl, MultipartFile file, Class<T> type){
-        Resource resource = file.getResource();
-
-        MultiValueMap<String, Object> param = new LinkedMultiValueMap<>();
-        param.add("file", resource);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("x-api-key", RestNetwork.CAT_API_KEY);
-
-
-        return restClient.post()
-                .uri(apiUrl)
-                .body(param)
-                .contentType(MediaType.MULTIPART_FORM_DATA)
-                .headers(httpHeaders -> httpHeaders.addAll(headers))
-                .retrieve()
-                .body(String.class);
-    }
 }

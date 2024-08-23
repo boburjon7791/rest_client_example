@@ -1,6 +1,7 @@
 package com.rest_client.rest_client_example;
 
 import com.rest_client.rest_client_example.model.Attachment;
+import com.rest_client.rest_client_example.model.CatAttachment;
 import com.rest_client.rest_client_example.network.RestNetwork;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,17 +17,12 @@ public class TestController {
         String body;
 
         // for error case
-//        body=RestNetwork.saveImage(RestNetwork.IMAGE_UPLOAD+"ddd", file, Attachment.class);
+//        body=RestNetwork.post(RestNetwork.CAT_IMAGE_UPLOAD+"ddd", file);
 
         // for success case
-        body=RestNetwork.saveImage(RestNetwork.IMAGE_UPLOAD+"ddd", file, Attachment.class);
-        response=RestNetwork.parseFromJson(body, Attachment.class);
-        // for error case
-//        body=RestNetwork.saveImage(RestNetwork.CAT_IMAGE_UPLOAD+"ddaa", file, CatAttachment.class);
+        body=RestNetwork.post(RestNetwork.CAT_IMAGE_UPLOAD, file);
 
-        // for success case
-//        body=RestNetwork.saveImage(RestNetwork.CAT_IMAGE_UPLOAD, file, CatAttachment.class);
-//        response=RestNetwork.parseFromJson(body, CatAttachment.class);
+        response=RestNetwork.parseFromJson(body, CatAttachment.class);
 
         System.out.println("body = " + body);
 
