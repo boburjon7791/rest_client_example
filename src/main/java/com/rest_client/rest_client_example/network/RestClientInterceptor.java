@@ -1,4 +1,4 @@
-package com.rest_client.rest_client_example.config;
+package com.rest_client.rest_client_example.network;
 
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
