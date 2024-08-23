@@ -18,39 +18,13 @@ public class RestClientInterceptor implements ClientHttpRequestInterceptor {
     @Override
     public @NotNull ClientHttpResponse intercept(@NonNull HttpRequest request, byte[] body,
                                                  @NonNull ClientHttpRequestExecution execution) throws IOException {
-        try {
-            ClientHttpResponse clientHttpResponse = execution.execute(request, body);
-            HttpStatusCode statusCode = clientHttpResponse.getStatusCode();
-            if (statusCode.is2xxSuccessful()) {
-                successResponseAction(request, clientHttpResponse);
-            }else if(!statusCode.is2xxSuccessful()) {
-                errorResponseAction(request, clientHttpResponse);
-            }
-            return clientHttpResponse;
-        }catch (Exception e){
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * this is for handling external API success responses
-     * */
-    private static void successResponseAction(HttpRequest request, ClientHttpResponse response){
-        try {
+        ClientHttpResponse response = execution.execute(request, body);
+        HttpStatusCode statusCode = response.getStatusCode();
+        if (statusCode.is2xxSuccessful()) {
             log.info("Called : request method = {},  request uri = {},  response status code = {}", request.getMethod(),request.getURI(), response.getStatusCode());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        }else if(!statusCode.is2xxSuccessful()) {
+            throw new RuntimeException("Error was occurred : request method = %s,  request uri = %s,  response status code = %s".formatted(request.getMethod(), request.getURI(), response.getStatusCode()));
         }
-    }
-
-    /**
-     * this is for handling third party API fail responses
-     * */
-    private static void errorResponseAction(HttpRequest request, ClientHttpResponse response){
-        try {
-            log.error("Error was occurred : request method = {},  request uri = {},  response status code = {}", request.getMethod(),request.getURI(), response.getStatusCode());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        return response;
     }
 }

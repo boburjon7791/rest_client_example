@@ -15,12 +15,20 @@ public class TestController {
         Object response;
         String body;
 
-        body=RestNetwork.saveImage(RestNetwork.IMAGE_UPLOAD, file, Attachment.class);
-        System.out.println("body = " + body);
-        response=RestNetwork.parseFromJson(body, Attachment.class);
+        // for error case
+//        body=RestNetwork.saveImage(RestNetwork.IMAGE_UPLOAD+"ddd", file, Attachment.class);
 
+        // for success case
+        body=RestNetwork.saveImage(RestNetwork.IMAGE_UPLOAD+"ddd", file, Attachment.class);
+        response=RestNetwork.parseFromJson(body, Attachment.class);
+        // for error case
+//        body=RestNetwork.saveImage(RestNetwork.CAT_IMAGE_UPLOAD+"ddaa", file, CatAttachment.class);
+
+        // for success case
 //        body=RestNetwork.saveImage(RestNetwork.CAT_IMAGE_UPLOAD, file, CatAttachment.class);
 //        response=RestNetwork.parseFromJson(body, CatAttachment.class);
+
+        System.out.println("body = " + body);
 
         return response;
     }
