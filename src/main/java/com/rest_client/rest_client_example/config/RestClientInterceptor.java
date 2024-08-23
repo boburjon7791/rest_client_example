@@ -16,7 +16,7 @@ import java.io.IOException;
 @Component
 public class RestClientInterceptor implements ClientHttpRequestInterceptor {
     @Override
-    public @NotNull ClientHttpResponse intercept(@NonNull HttpRequest request, byte[] body,
+    public ClientHttpResponse intercept(@NonNull HttpRequest request, byte[] body,
                                                  @NonNull ClientHttpRequestExecution execution) throws IOException {
         ClientHttpResponse response = execution.execute(request, body);
         HttpStatusCode statusCode = response.getStatusCode();
