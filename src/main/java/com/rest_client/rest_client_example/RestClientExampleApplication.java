@@ -25,7 +25,7 @@ public class RestClientExampleApplication {
 		 * get Post array
 		 * */
 		/*System.out.println("1. get all test");
-		postJsonArray = RestNetwork.get(RestNetwork.POSTS_API, RestNetwork.emptyParam(), RestNetwork.emptyHeaders());
+		postJsonArray = RestNetwork.get(RestNetwork.POSTS_API, RestNetwork.emptyParam());
 		posts = RestNetwork.parseFromJsonArray(postJsonArray, Post.class);
 		posts.forEach(System.out::println);
 		System.out.println();*/
@@ -34,7 +34,7 @@ public class RestClientExampleApplication {
 		 * get Post array with request params
 		 * */
 		/*System.out.println("2. get all by userId");
-		postJsonArray = RestNetwork.get(RestNetwork.POSTS_API, Map.of("userId", String.valueOf(1)), RestNetwork.emptyHeaders());
+		postJsonArray = RestNetwork.get(RestNetwork.POSTS_API, Map.of("userId", String.valueOf(1)));
 		posts = RestNetwork.parseFromJsonArray(postJsonArray, Post.class);
 		posts.forEach(System.out::println);
 		System.out.println();*/
@@ -43,7 +43,7 @@ public class RestClientExampleApplication {
 		 * get one Post
 		 * */
 		/*System.out.println("3. get one test");
-		String postJson = RestNetwork.get(RestNetwork.POSTS_API + "/1", RestNetwork.emptyParam(), RestNetwork.emptyHeaders());
+		String postJson = RestNetwork.get(RestNetwork.POSTS_API + "/1", RestNetwork.emptyParam());
 		Post post = RestNetwork.parseFromJson(postJson, Post.class);
 		System.out.println("post = " + post);
 		System.out.println();*/
@@ -53,7 +53,7 @@ public class RestClientExampleApplication {
 		 * */
 		/*System.out.println("4. create test");
 		post = new Post(1L, null, "Weather is cold", "Weather is very cold and temperature is 30 gradus");
-		postJson = RestNetwork.post(RestNetwork.POSTS_API, post, RestNetwork.emptyParam(), RestNetwork.emptyHeaders(), MediaType.APPLICATION_JSON);
+		postJson = RestNetwork.post(RestNetwork.POSTS_API, post, MediaType.APPLICATION_JSON);
 		post = RestNetwork.parseFromJson(postJson, Post.class);
 		System.out.println("post = " + post);
 		System.out.println();*/
@@ -68,7 +68,7 @@ public class RestClientExampleApplication {
 		 * */
 		/*System.out.println("6. update test");
 		post = new Post(1L, null, "Acer", "Acer company was published new laptop");
-		postJson = RestNetwork.put(RestNetwork.POSTS_API + "/1", post, RestNetwork.emptyParam(), RestNetwork.emptyHeaders(), MediaType.APPLICATION_JSON);
+		postJson = RestNetwork.put(RestNetwork.POSTS_API + "/1", post, RestNetwork.emptyParam(), MediaType.APPLICATION_JSON);
 		post = RestNetwork.parseFromJson(postJson, Post.class);
 		System.out.println("post = " + post);
 		System.out.println();*/
@@ -77,7 +77,7 @@ public class RestClientExampleApplication {
 		 * delete Post
 		 * */
 		/*System.out.println("7. delete test");
-		RestNetwork.delete(RestNetwork.POSTS_API + "/1", RestNetwork.emptyParam(), RestNetwork.emptyHeaders());
+		RestNetwork.delete(RestNetwork.POSTS_API + "/1", RestNetwork.emptyParam());
 		System.out.println();*/
 	}
 }

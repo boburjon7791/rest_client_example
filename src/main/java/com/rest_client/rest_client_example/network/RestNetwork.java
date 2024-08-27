@@ -1,10 +1,8 @@
 package com.rest_client.rest_client_example.network;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -17,13 +15,17 @@ import java.util.Map;
 
 @Slf4j
 public class RestNetwork {
-    private static final RestClient restClient=RestClient.builder().requestInterceptor(new RestClientInterceptor()).build();
+
+    private static final RestClient restClient=RestClient.builder()
+            .requestInterceptors(interceptors -> interceptors.addAll(List.of(
+                    Interceptors.loggingInterceptor(),
+                    Interceptors.catApiInterceptor()
+            ))).build();
     private static final ObjectMapper objectMapper=new ObjectMapper();
 
-    public static String get(String apiUrl, Map<String, String> params, HttpHeaders headers){
+    public static String get(String apiUrl, Map<String, String> params){
         return restClient.get()
                 .uri(apiUrl, uriBuilder -> uriBuilder.replaceQueryParams(convertToMultiValueMap(params)).build())
-                .headers(httpHeaders -> httpHeaders.addAll(headers))
                 .retrieve()
                 .body(String.class);
     }
@@ -31,29 +33,25 @@ public class RestNetwork {
     /*
     * POST requests
     * */
-    public static <T> String post(String apiUrl, T body, Map<String, String> params, HttpHeaders headers, MediaType mediaType){
+    public static <T> String post(String apiUrl, T body, MediaType mediaType){
         return restClient.post()
-                .uri(apiUrl, uriBuilder -> uriBuilder.replaceQueryParams(convertToMultiValueMap(params)).build())
+                .uri(apiUrl)
                 .body(body)
                 .contentType(mediaType)
-                .headers(httpHeaders -> httpHeaders.addAll(headers))
                 .retrieve()
                 .body(String.class);
     }
 
-    public static String post(String apiUrl, MultipartFile file, HttpHeaders headers){
-        Resource resource = file.getResource();
+    public static String post(String apiUrl, Map<String, MultipartFile> files){
 
-        MultiValueMap<String, Object> param = new LinkedMultiValueMap<>();
-        param.add("file", resource);
+        MultiValueMap<String, Resource> params = new LinkedMultiValueMap<>();
 
-        headers.set("x-api-key", RestNetwork.CAT_API_KEY);
+        files.forEach((name, file) -> params.add(name, file.getResource()));
 
         return restClient.post()
                 .uri(apiUrl)
-                .body(param)
+                .body(params)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
-                .headers(httpHeaders -> httpHeaders.addAll(headers))
                 .retrieve()
                 .body(String.class);
     }
@@ -61,12 +59,11 @@ public class RestNetwork {
     /*
     * PUT request
     * */
-    public static <T> String put(String apiUrl, T body, Map<String, String> params, HttpHeaders headers, MediaType mediaType){
+    public static <T> String put(String apiUrl, T body, MediaType mediaType){
         return restClient.put()
-                .uri(apiUrl, uriBuilder -> uriBuilder.replaceQueryParams(convertToMultiValueMap(params)).build())
+                .uri(apiUrl)
                 .body(body)
                 .contentType(mediaType)
-                .headers(httpHeaders -> httpHeaders.addAll(headers))
                 .retrieve()
                 .body(String.class);
     }
@@ -74,10 +71,9 @@ public class RestNetwork {
     /*
     * DELETE request
     * */
-    public static void delete(String apiUrl, Map<String, String> params, HttpHeaders headers){
+    public static void delete(String apiUrl, Map<String, String> params){
          restClient.delete()
                 .uri(apiUrl, uriBuilder -> uriBuilder.replaceQueryParams(convertToMultiValueMap(params)).build())
-                .headers(httpHeaders -> httpHeaders.addAll(headers))
                 .retrieve()
                 .toBodilessEntity();
     }
@@ -105,10 +101,6 @@ public class RestNetwork {
         return new HashMap<>();
     }
 
-    public static HttpHeaders emptyHeaders(){
-        return new HttpHeaders();
-    }
-
     public static MultiValueMap<String, String> convertToMultiValueMap(Map<String, String> params){
         MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
 
@@ -121,13 +113,20 @@ public class RestNetwork {
      * External APIs
      * */
     public static final String POSTS_API="https://jsonplaceholder.typicode.com/posts";
-    public static final String IMAGE_URL="https://media.wired.com/photos/64daad6b4a854832b16fd3bc/master/w_1920,c_limit/How-to-Choose-a-Laptop-August-2023-Gear.jpg";
-    public static final String IMAGE_URL2="https://i.pinimg.com/originals/72/22/78/722278c489e2563abc3e0aa91901bb16.jpg";
-    public static final String IMAGE_UPLOAD="https://v2.convertapi.com/upload";
     public static final String CAT_IMAGE_UPLOAD="https://api.thecatapi.com/v1/images/upload";
 
     /**
      * External APIs' keys
      * */
     public static final String CAT_API_KEY="live_MCgVsBDdcRjZO3MNuKjaMDlAhrdMO5s2G3DDlJ3qvvrj6EnJdnrcXADToyujNG8L";
+
+    /**
+     * External APIs' header names
+     * */
+    public static final String X_API_KEY="x-api-key";
+
+    /**
+     * External APIs' param names
+     * */
+    public static final String FILE="file";
 }

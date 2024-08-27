@@ -1,11 +1,20 @@
 package com.rest_client.rest_client_example.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public record CatAttachment(
         String id,
+
         String url,
-        Integer with,
+
+        Integer width,
+
         Integer height,
-        String original_filename,
+
+        @JsonProperty("original_filename")
+        String originalFilename,
+
         Integer pending,
+
         Integer approved
 ) {}
