@@ -18,7 +18,7 @@ import java.util.Map;
 @Slf4j
 public class RestNetwork {
     private static final RestClient restClient=RestClient.builder().requestInterceptor(new RestClientInterceptor()).build();
-    private static final ObjectMapper objectMapper=new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    private static final ObjectMapper objectMapper=new ObjectMapper();
 
     public static String get(String apiUrl, Map<String, String> params, HttpHeaders headers){
         return restClient.get()
