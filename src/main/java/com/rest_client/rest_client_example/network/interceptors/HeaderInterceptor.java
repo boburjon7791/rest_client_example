@@ -20,12 +20,12 @@ public class HeaderInterceptor implements ClientHttpRequestInterceptor{
 
         headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
 
-        switch (request.getURI().toString()) {
-            case RestNetwork.CAT_IMAGE_UPLOAD -> {
-                headers.set(RestNetwork.X_API_KEY, RestNetwork.CAT_API_KEY);
-                headers.set(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE);
-            }
+        if(request.getURI().toString().contains(RestNetwork.CAT_IMAGE_UPLOAD)) {
+            headers.set(RestNetwork.X_API_KEY, RestNetwork.CAT_API_KEY);
+            headers.set(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE);
+            return execution.execute(request, body);
         }
+
         return execution.execute(request, body);
     }
 }
