@@ -1,6 +1,8 @@
 package com.rest_client.rest_client_example.network;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rest_client.rest_client_example.network.interceptors.HeaderInterceptor;
+import com.rest_client.rest_client_example.network.interceptors.LoggingInterceptor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
@@ -18,8 +20,8 @@ public class RestNetwork {
 
     private static final RestClient restClient=RestClient.builder()
             .requestInterceptors(interceptors -> interceptors.addAll(List.of(
-                    Interceptors.loggingInterceptor(),
-                    Interceptors.catApiInterceptor()
+                    new LoggingInterceptor(),
+                    new HeaderInterceptor()
             ))).build();
     private static final ObjectMapper objectMapper=new ObjectMapper();
 
