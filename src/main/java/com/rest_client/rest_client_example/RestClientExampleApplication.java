@@ -2,22 +2,19 @@ package com.rest_client.rest_client_example;
 
 import com.rest_client.rest_client_example.model.Post;
 import com.rest_client.rest_client_example.network.RestNetwork;
-import jakarta.annotation.PostConstruct;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @SpringBootApplication
 public class RestClientExampleApplication {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 		SpringApplication.run(RestClientExampleApplication.class, args);
-	}
 
-	@PostConstruct
-	public void init() {
+		TimeUnit.SECONDS.sleep(15);
 		String postJsonArray;
 		List<Post> posts;
 
@@ -80,4 +77,5 @@ public class RestClientExampleApplication {
 		RestNetwork.delete(RestNetwork.POSTS_API + "/1", RestNetwork.emptyParam());
 		System.out.println();*/
 	}
+
 }

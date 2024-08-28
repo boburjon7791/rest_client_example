@@ -3,9 +3,13 @@ package com.rest_client.rest_client_example.network;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rest_client.rest_client_example.network.interceptors.HeaderInterceptor;
 import com.rest_client.rest_client_example.network.interceptors.LoggingInterceptor;
+import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClient;
@@ -15,14 +19,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Slf4j
+@Configuration
+@RequiredArgsConstructor
 public class RestNetwork {
 
-    private static final RestClient restClient=RestClient.builder()
-            .requestInterceptors(interceptors -> interceptors.addAll(List.of(
-                    new LoggingInterceptor(),
-                    new HeaderInterceptor()
-            ))).build();
+    private static RestClient restClient;
+
+    private final List<ClientHttpRequestInterceptor> clientHttpRequestInterceptors;
+
+    @PostConstruct
+    public void init(){
+        restClient=RestClient.builder()
+                .requestInterceptors(interceptors -> interceptors.addAll(clientHttpRequestInterceptors)).build();
+    }
     private static final ObjectMapper objectMapper=new ObjectMapper();
 
     public static String get(String apiUrl, Map<String, String> params){
