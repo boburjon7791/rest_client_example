@@ -4,6 +4,7 @@ import com.rest_client.rest_client_example.model.Post;
 import com.rest_client.rest_client_example.network.RestNetwork;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.http.MediaType;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -15,6 +16,8 @@ public class RestClientExampleApplication {
 		SpringApplication.run(RestClientExampleApplication.class, args);
 		String postJsonArray;
 		List<Post> posts;
+		Post post;
+		String postJson;
 
 		/*
 		 * get Post array
@@ -48,7 +51,7 @@ public class RestClientExampleApplication {
 		 * */
 		/*System.out.println("4. create test");
 		post = new Post(1L, null, "Weather is cold", "Weather is very cold and temperature is 30 gradus");
-		postJson = RestNetwork.post(RestNetwork.POSTS_API, post, MediaType.APPLICATION_JSON);
+		postJson = RestNetwork.post(RestNetwork.POSTS_API, post);
 		post = RestNetwork.parseFromJson(postJson, Post.class);
 		System.out.println("post = " + post);
 		System.out.println();*/
@@ -63,7 +66,7 @@ public class RestClientExampleApplication {
 		 * */
 		/*System.out.println("6. update test");
 		post = new Post(1L, null, "Acer", "Acer company was published new laptop");
-		postJson = RestNetwork.put(RestNetwork.POSTS_API + "/1", post, RestNetwork.emptyParam(), MediaType.APPLICATION_JSON);
+		postJson = RestNetwork.put(RestNetwork.POSTS_API + "/1", post);
 		post = RestNetwork.parseFromJson(postJson, Post.class);
 		System.out.println("post = " + post);
 		System.out.println();*/

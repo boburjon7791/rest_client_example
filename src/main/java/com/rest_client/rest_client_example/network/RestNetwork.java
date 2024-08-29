@@ -28,11 +28,10 @@ public class RestNetwork {
     /*
     * POST requests
     * */
-    public static <T> String post(String apiUrl, T body, MediaType mediaType){
+    public static <T> String post(String apiUrl, T body){
         return restClient.post()
                 .uri(apiUrl)
                 .body(body)
-                .contentType(mediaType)
                 .retrieve()
                 .body(String.class);
     }
@@ -54,11 +53,10 @@ public class RestNetwork {
     /*
     * PUT request
     * */
-    public static <T> String put(String apiUrl, T body, MediaType mediaType){
+    public static <T> String put(String apiUrl, T body){
         return restClient.put()
                 .uri(apiUrl)
                 .body(body)
-                .contentType(mediaType)
                 .retrieve()
                 .body(String.class);
     }
