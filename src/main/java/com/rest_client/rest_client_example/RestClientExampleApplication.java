@@ -11,10 +11,8 @@ import java.util.concurrent.TimeUnit;
 @SpringBootApplication
 public class RestClientExampleApplication {
 
-	public static void main(String[] args) throws InterruptedException {
+	public static void main(String[] args){
 		SpringApplication.run(RestClientExampleApplication.class, args);
-
-		TimeUnit.SECONDS.sleep(15);
 		String postJsonArray;
 		List<Post> posts;
 
