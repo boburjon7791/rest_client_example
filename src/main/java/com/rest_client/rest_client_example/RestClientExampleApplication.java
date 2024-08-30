@@ -91,7 +91,7 @@ public class RestClientExampleApplication {
 
 //		post = RestNetwork.parseFromJson(postJson, Post.class);
 //		System.out.println("post = " + post);
-		System.out.println();
+//		System.out.println();
 
 		/*
 		 * create Post
