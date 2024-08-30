@@ -2,15 +2,18 @@ package com.rest_client.rest_client_example.network;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.core.io.Resource;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class RestNetwork {
 
@@ -18,14 +21,35 @@ public class RestNetwork {
 
     private static final ObjectMapper objectMapper=new ObjectMapper();
 
-    public static String get(String apiUrl, Map<String, String> params){
+    /**
+     * GET requests
+     * */
+    public static ResponseEntity<String> get1(String apiUrl, Map<String, String> params){
+
+        AtomicReference<HttpStatusCode> statusCode=new AtomicReference<>();
+
+        AtomicReference<HttpHeaders> headers=new AtomicReference<>();
+
+        String responseBody = restClient.get()
+                .uri(apiUrl, uriBuilder -> uriBuilder.replaceQueryParams(convertToMultiValueMap(params)).build())
+                .retrieve()
+                .onStatus(httpStatusCode -> true, (request, response) -> {
+                    statusCode.set(response.getStatusCode());
+                    headers.set(response.getHeaders());
+                })
+                .body(String.class);
+
+        return ResponseEntity.status(statusCode.get()).headers(headers.get()).body(responseBody);
+    }
+
+    public static String get2(String apiUrl, Map<String, String> params){
         return restClient.get()
                 .uri(apiUrl, uriBuilder -> uriBuilder.replaceQueryParams(convertToMultiValueMap(params)).build())
                 .retrieve()
                 .body(String.class);
     }
 
-    /*
+    /**
     * POST requests
     * */
     public static <T> String post(String apiUrl, T body){
@@ -50,7 +74,7 @@ public class RestNetwork {
                 .body(String.class);
     }
 
-    /*
+    /**
     * PUT request
     * */
     public static <T> String put(String apiUrl, T body){
@@ -61,7 +85,7 @@ public class RestNetwork {
                 .body(String.class);
     }
 
-    /*
+    /**
     * DELETE request
     * */
     public static void delete(String apiUrl, Map<String, String> params){
@@ -71,8 +95,8 @@ public class RestNetwork {
                 .toBodilessEntity();
     }
 
-    /*
-    * helper methods
+    /**
+    * Helper methods
     * */
     public static <T> List<T> parseFromJsonArray(String jsonBody, Class<T> type){
         try {

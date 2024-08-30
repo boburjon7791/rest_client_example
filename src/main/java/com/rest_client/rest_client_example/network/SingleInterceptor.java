@@ -33,19 +33,19 @@ class SingleInterceptor implements ClientHttpRequestInterceptor {
                     log.info("Called : request uri = {},  response status code = {}", request.getURI() + " " + request.getMethod(), statusCode);
                 }
                 case 400->{
-                    throw new RuntimeException("Bad request was send :  request uri = %s,  response status code = %s, response body = %s".formatted(request.getURI() + " " + request.getMethod(), statusCode, new String(response.getBody().readAllBytes())));
+                    log.error("Bad request was send :  request uri = {},  response status code = {}, response body = {}", request.getURI() + " " + request.getMethod(), statusCode, new String(response.getBody().readAllBytes()));
                 }
                 case 401->{
-                    throw new RuntimeException("Unauthorized :  request uri = %s,  response status code = %s, response body = %s".formatted(request.getURI() + " " + request.getMethod(), statusCode, new String(response.getBody().readAllBytes())));
+                    log.error("Unauthorized :  request uri = {},  response status code = {}, response body = {}", request.getURI() + " " + request.getMethod(), statusCode, new String(response.getBody().readAllBytes()));
                 }
                 case 403->{
-                    throw new RuntimeException("Access denied :  request uri = %s,  response status code = %s, response body = %s".formatted(request.getURI() + " " + request.getMethod(), statusCode, new String(response.getBody().readAllBytes())));
+                    log.error("Access denied :  request uri = {},  response status code = {}, response body = {}", request.getURI() + " " + request.getMethod(), statusCode, new String(response.getBody().readAllBytes()));
                 }
                 case 404->{
-                    throw new RuntimeException("Not found :  request uri = %s,  response status code = %s, response body = %s".formatted(request.getURI() + " " + request.getMethod(), statusCode, new String(response.getBody().readAllBytes())));
+                    log.error("Not found :  request uri = {},  response status code = {}, response body = {}", request.getURI() + " " + request.getMethod(), statusCode, new String(response.getBody().readAllBytes()));
                 }
                 default->{
-                    throw new RuntimeException("Error was occurred :  request uri = %s,  response status code = %s, response body = %s".formatted(request.getURI() + " " + request.getMethod(), statusCode, new String(response.getBody().readAllBytes())));
+                    log.error("Other error :  request uri = {},  response status code = {}, response body = {}", request.getURI() + " " + request.getMethod(), statusCode, new String(response.getBody().readAllBytes()));
                 }
             }
             return response;
