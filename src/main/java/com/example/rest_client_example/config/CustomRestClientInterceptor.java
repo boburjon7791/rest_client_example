@@ -22,7 +22,7 @@ public class CustomRestClientInterceptor implements ClientHttpRequestInterceptor
         /*
         * write custom http headers
         * */
-        if (request.getURI().toString().equals(RestNetwork.JSON_PLACE_HOLDER)) {
+        if (request.getURI().toString().contains(RestNetwork.JSON_PLACE_HOLDER)) {
             headers.add(RestNetwork.API_KEY_NAME, RestNetwork.API_KEY_VALUE);
         }
 
